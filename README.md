@@ -2,6 +2,8 @@
 
 A modern HTML5 / JavaScript / CSS Single Page Application (SPA) utility for designing and editing Commodore 64 sprites, featuring authentic VIC-II hardware mode support, live previews, and instant Commodore BASIC V2 `.BAS` code generation.
 
+![C64 Sprite Studio screenshot](screenshot.png)
+
 ---
 
 ## Demo
