@@ -4,6 +4,9 @@ A modern HTML5 / JavaScript / CSS Single Page Application (SPA) utility for desi
 
 ---
 
+## Demo
+View demo: <a href="https://prichards14.github.io/pr-c64-sprite-studio/">https://prichards14.github.io/pr-c64-sprite-studio/</a>
+
 ## Features
 
 ### 1. Authentic VIC-II Modes & Standard Dimensions
