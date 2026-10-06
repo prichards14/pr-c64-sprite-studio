@@ -184,4 +184,22 @@ assert.strictEqual(prgSprite.bytes[1], 3);
 assert.strictEqual(prgSprite.bytes[62], (62 * 3) & 0xFF);
 console.log('✓ Binary PRG payload test passed');
 
+// 11. Test Uppercase vs Lowercase Code Generation (for emulator pasting)
+const lowerCode = BasicGenerator.generate(sprite, { codeCase: 'lower' });
+assert.ok(lowerCode.startsWith('100 rem'), 'Lowercase option must produce lowercase commands');
+assert.ok(lowerCode.includes('data'), 'DATA keyword must be lowercase');
+assert.ok(lowerCode.includes('poke 53281,'), 'POKE keyword must be lowercase');
+assert.ok(!/[A-Z]/.test(lowerCode), 'Lowercase option should not contain uppercase letters');
+
+const upperCode = BasicGenerator.generate(sprite, { codeCase: 'upper' });
+assert.ok(upperCode.startsWith('100 REM'), 'Uppercase option must produce uppercase commands');
+assert.ok(upperCode.includes('DATA'), 'DATA keyword must be uppercase');
+assert.ok(!/[a-z]/.test(upperCode), 'Uppercase option should not contain lowercase letters');
+
+// Verify parser works identically on lowercase code
+const lowerParsed = BasicGenerator.parse(lowerCode);
+assert.strictEqual(lowerParsed.bytes.length, 63);
+assert.strictEqual(lowerParsed.mode, 'lores');
+console.log('✓ Uppercase and Lowercase generator & roundtrip parsing tests passed');
+
 console.log('ALL TESTS PASSED SUCCESSFULLY! 🎉');

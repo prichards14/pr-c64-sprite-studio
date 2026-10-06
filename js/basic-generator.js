@@ -18,6 +18,7 @@ class BasicGenerator {
     const spritePointerAddr = 2040 + spriteNum; // 2040 = 1024 + 1016 (Sprite 0 pointer)
     const spriteEnableBit = 1 << spriteNum;
     const format = options.dataFormat || 'rows'; // 'rows' (3 bytes/line) or 'compact' (8 bytes/line)
+    const codeCase = options.codeCase || 'upper'; // 'upper' or 'lower'
 
     const lines = [];
 
@@ -76,7 +77,8 @@ class BasicGenerator {
       }
     }
 
-    return lines.join('\n');
+    const result = lines.join('\n');
+    return codeCase === 'lower' ? result.toLowerCase() : result.toUpperCase();
   }
 
   /**

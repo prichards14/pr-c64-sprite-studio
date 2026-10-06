@@ -667,6 +667,8 @@ canvas#editorCanvas {
   border-top-right-radius: 6px;
   border: 1px solid var(--border-color);
   border-bottom: none;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .code-title {
@@ -678,7 +680,15 @@ canvas#editorCanvas {
 .code-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
+}
+
+#btnToggleCase.is-lower {
+  border-color: var(--c64-cyan);
+  color: var(--c64-cyan);
+  background: rgba(117, 206, 200, 0.15);
+  box-shadow: 0 0 8px rgba(117, 206, 200, 0.25);
 }
 
 .code-editor-area {

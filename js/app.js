@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let previewBgMode = 'c64'; // 'c64', 'transparent', 'black'
   let dataFormat = 'rows';   // 'rows' (3 bytes/line) or 'compact' (8 bytes/line)
   let spriteNumber = 0;      // 0 to 7
+  let codeCase = 'upper';    // 'upper' or 'lower' (for C64 emulator paste)
 
   // Undo / Redo stacks
   const undoStack = [];
@@ -39,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const presetSelect = document.getElementById('presetSelect');
   const btnHires = document.getElementById('btnHires');
   const btnLores = document.getElementById('btnLores');
+  const btnToggleCase = document.getElementById('btnToggleCase');
+  const lblCase = document.getElementById('lblCase');
   const fileInput = document.getElementById('fileInput');
   const toast = document.getElementById('toast');
 
@@ -310,9 +313,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateBasicCode() {
     const code = BasicGenerator.generate(sprite, {
       spriteNumber: spriteNumber,
-      dataFormat: dataFormat
+      dataFormat: dataFormat,
+      codeCase: codeCase
     });
     basicOutput.value = code;
+  }
+
+  function updateCaseButton() {
+    if (!btnToggleCase || !lblCase) return;
+    if (codeCase === 'lower') {
+      lblCase.textContent = 'Lowercase';
+      btnToggleCase.classList.add('is-lower');
+      btnToggleCase.title = 'Current: Lowercase (for C64 emulator paste). Click to switch to Uppercase.';
+    } else {
+      lblCase.textContent = 'Uppercase';
+      btnToggleCase.classList.remove('is-lower');
+      btnToggleCase.title = 'Current: Uppercase (C64 screen format). Click to switch to Lowercase (emulator paste).';
+    }
   }
 
   // --- Update Color Slots UI ---
@@ -653,6 +670,17 @@ document.addEventListener('DOMContentLoaded', () => {
     updateBasicCode();
   });
 
+  // Uppercase / Lowercase Case Toggle Button
+  btnToggleCase?.addEventListener('click', () => {
+    codeCase = codeCase === 'upper' ? 'lower' : 'upper';
+    updateCaseButton();
+    updateBasicCode();
+    showToast(codeCase === 'lower' 
+      ? 'Switched to Lowercase (Emulator Paste Mode)' 
+      : 'Switched to Uppercase'
+    );
+  });
+
   // Undo / Redo Buttons
   document.getElementById('btnUndo')?.addEventListener('click', undo);
   document.getElementById('btnRedo')?.addEventListener('click', redo);
@@ -902,5 +930,6 @@ document.addEventListener('DOMContentLoaded', () => {
   sprite.colors = { ...initialPreset.colors };
   presetSelect.value = '0';
   updateUI();
+  updateCaseButton();
   updateHistoryButtons();
 });

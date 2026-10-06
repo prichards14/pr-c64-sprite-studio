@@ -50,6 +50,9 @@ A modern HTML5 / JavaScript / CSS Single Page Application (SPA) utility for desi
 * **Sprite DATA statements starting at line 1000**:
   * Default: Row-by-row format (21 lines, 3 bytes per line from lines 1000 to 1200).
   * Option: Compact format (8 bytes per line from lines 1000 to 1070).
+* **Uppercase / Lowercase Toggle**:
+  * One-click toggle between Uppercase and Lowercase code formatting directly above the code box.
+  * **Emulator Paste Mode (Lowercase)**: Essential when copying/pasting into VICE or other C64 emulators, which treat unshifted ASCII lowercase input as unshifted PETSCII (rendering correctly as uppercase C64 characters without syntax errors or triggering graphic symbols).
 * **Quick Actions**: One-click "Copy BASIC" and "Download .BAS".
 
 ### 6. Save and Load
