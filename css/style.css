@@ -1,0 +1,838 @@
+/* ==========================================================================
+   Commodore 64 Sprite Studio - Modern Retro Stylesheet
+   ========================================================================== */
+
+:root {
+  /* Authentic C64 Colodore Palette Variables */
+  --c64-black: #000000;
+  --c64-white: #FFFFFF;
+  --c64-red: #813338;
+  --c64-cyan: #75CEC8;
+  --c64-purple: #8E3C97;
+  --c64-green: #56AC4D;
+  --c64-blue: #2E2C9B;
+  --c64-yellow: #EDF171;
+  --c64-orange: #8E5029;
+  --c64-brown: #553800;
+  --c64-light-red: #C46C71;
+  --c64-dark-grey: #4A4A4A;
+  --c64-grey: #7B7B7B;
+  --c64-light-green: #A9FF9F;
+  --c64-light-blue: #706DEB;
+  --c64-light-grey: #B2B2B2;
+
+  /* Theme Colors */
+  --bg-app: #121024;
+  --bg-panel: #1b1735;
+  --bg-panel-header: #242047;
+  --bg-input: #0e0c1c;
+  --border-color: #383264;
+  --border-focus: #706deb;
+  --text-main: #f0f0ff;
+  --text-muted: #9590ba;
+  --accent: #706deb;
+  --accent-hover: #8886f5;
+  --accent-active: #5a57cb;
+  --c64-screen-bg: #2E2C9B;
+  --c64-screen-border: #706DEB;
+
+  /* Typography */
+  --font-retro: 'Press Start 2P', 'Courier New', monospace;
+  --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Header & App Navigation
+   ========================================================================== */
+
+header.app-header {
+  background: linear-gradient(180deg, #231c46 0%, #171333 100%);
+  border-bottom: 2px solid var(--border-color);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.c64-stripes {
+  display: flex;
+  flex-direction: column;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.c64-stripes span {
+  flex: 1;
+}
+.c64-stripes .s-red    { background: var(--c64-red); }
+.c64-stripes .s-orange { background: var(--c64-orange); }
+.c64-stripes .s-yellow { background: var(--c64-yellow); }
+.c64-stripes .s-green  { background: var(--c64-green); }
+.c64-stripes .s-blue   { background: var(--c64-light-blue); }
+
+.app-title {
+  font-family: var(--font-retro);
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 2px 2px 0 var(--c64-blue);
+}
+
+.app-subtitle {
+  font-size: 11px;
+  color: var(--c64-cyan);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Mode Switcher Buttons */
+.mode-toggle-group {
+  display: flex;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.mode-btn {
+  font-family: var(--font-retro);
+  font-size: 10px;
+  padding: 7px 12px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mode-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(112, 109, 235, 0.4);
+}
+
+/* Preset Selector Dropdown */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+select.app-select {
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 7px 30px 7px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+}
+
+select.app-select:focus {
+  border-color: var(--border-focus);
+}
+
+.select-wrapper::after {
+  content: '▼';
+  font-size: 9px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+/* Primary Action Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: #2a254e;
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  background: #373166;
+  border-color: #514b8a;
+}
+
+.btn-danger {
+  background: #501d24;
+  border-color: #7b2933;
+  color: #ffb4b4;
+}
+.btn-danger:hover {
+  background: #68242e;
+}
+
+.btn-icon-only {
+  padding: 7px 10px;
+}
+
+/* ==========================================================================
+   Main App Workspace Layout (3-Column)
+   ========================================================================== */
+
+main.app-workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 290px minmax(440px, 1fr) 420px;
+  gap: 16px;
+  padding: 16px;
+  max-width: 1720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1280px) {
+  main.app-workspace {
+    grid-template-columns: 270px 1fr;
+  }
+  .code-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 860px) {
+  main.app-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Generic Panel Styling */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.panel-header {
+  background: var(--bg-panel-header);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-family: var(--font-retro);
+  font-size: 11px;
+  color: #fff;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* ==========================================================================
+   Left Panel: Tools & Color Palette
+   ========================================================================== */
+
+/* Tools Grid */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.tool-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tool-btn .icon {
+  font-size: 16px;
+}
+
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #514b8a;
+}
+
+.tool-btn.active {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(112, 109, 235, 0.35);
+}
+
+/* Canvas Transform Actions */
+.transform-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.shift-cluster {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.shift-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shift-btn:hover {
+  background: #373166;
+}
+
+/* Color Slots Area */
+.color-slots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.slot-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--bg-input);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.slot-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.slot-card.active {
+  border-color: var(--accent);
+  background: rgba(112, 109, 235, 0.15);
+}
+
+.slot-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.slot-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.slot-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.slot-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.slot-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c64-cyan);
+  font-weight: bold;
+}
+
+/* Standard 16 C64 Colors Palette Grid */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  background: var(--bg-input);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.c64-color-swatch {
+  height: 32px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-retro);
+  font-size: 8px;
+  font-weight: bold;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.c64-color-swatch:hover {
+  transform: scale(1.08);
+  border-color: #fff;
+  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.c64-color-swatch.active-in-slot {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.c64-color-swatch span.num {
+  pointer-events: none;
+}
+
+.c64-color-swatch.light-text span.num {
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
+}
+.c64-color-swatch.dark-text span.num {
+  color: #000;
+}
+
+/* ==========================================================================
+   Center Panel: Main Sprite Grid Canvas & Controls
+   ========================================================================== */
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-panel-header);
+  border-bottom: 1px solid var(--border-color);
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.canvas-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at center, #181531 0%, #0c0a1a 100%);
+  overflow: auto;
+  position: relative;
+  user-select: none;
+}
+
+canvas#editorCanvas {
+  background-color: #000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--border-color);
+  cursor: crosshair;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Canvas Status Bar */
+.editor-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  background: var(--bg-panel-header);
+  border-top: 1px solid var(--border-color);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.coords-display {
+  color: var(--c64-cyan);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Right Panel: Previews & C64 BASIC .BAS Code Box
+   ========================================================================== */
+
+.preview-code-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Preview Card */
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-display-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 16px;
+  background: var(--c64-screen-bg);
+  border: 4px solid var(--c64-screen-border);
+  border-radius: 6px;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.5);
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-label {
+  font-family: var(--font-retro);
+  font-size: 9px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.thumbnail-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: transparent;
+}
+
+.actual-size-frame {
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Checkbox Toggle Controls */
+.preview-toggles {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.c64-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.c64-checkbox input[type="checkbox"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* C64 BASIC Code Box Container */
+.code-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.code-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #14102c;
+  padding: 8px 12px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+}
+
+.code-title {
+  font-family: var(--font-retro);
+  font-size: 10px;
+  color: var(--c64-cyan);
+}
+
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.code-editor-area {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+}
+
+textarea#basicOutput {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  max-height: 400px;
+  background: #090714;
+  color: #aaffee;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  resize: vertical;
+  outline: none;
+  white-space: pre;
+  overflow: auto;
+}
+
+textarea#basicOutput:focus {
+  border-color: var(--border-focus);
+}
+
+/* ==========================================================================
+   Modals & Toast Notifications
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 520px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  background: var(--bg-panel-header);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  font-family: var(--font-retro);
+  font-size: 12px;
+  color: #fff;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+.modal-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 18px;
+  background: var(--bg-panel-header);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Help / Shortcut Modal Styling */
+.shortcut-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.shortcut-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.shortcut-table kbd {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  color: var(--c64-cyan);
+}
+

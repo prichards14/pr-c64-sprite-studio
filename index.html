@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commodore 64 Sprite Studio - C64 Sprite Editor SPA</title>
+  <meta name="description" content="A modern HTML/JS/CSS Single Page Application utility for designing and editing Commodore 64 sprites in Hires (2-Color) and Lores Multicolor (4-Color) modes with BASIC V2 code export.">
+  
+  <!-- Retro Google Font for authentic 8-bit styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       App Header: Title, Mode Switcher, Presets, Save/Load Buttons
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="logo-group">
+      <div class="c64-stripes" aria-hidden="true">
+        <span class="s-red"></span>
+        <span class="s-orange"></span>
+        <span class="s-yellow"></span>
+        <span class="s-green"></span>
+        <span class="s-blue"></span>
+      </div>
+      <div>
+        <h1 class="app-title">C64 SPRITE STUDIO</h1>
+        <div class="app-subtitle">COMMODORE 64 VIC-II SPRITE EDITOR (24×21)</div>
+      </div>
+    </div>
+
+    <!-- Mode Switcher: Hires (2-Color) vs Lores (4-Color Multicolor) -->
+    <div class="header-controls">
+      <div class="mode-toggle-group" role="group" aria-label="Sprite Mode">
+        <button id="btnHires" class="mode-btn active" title="Hires 2-Color Mode (24x21 individual pixels)">
+          HIRES (2-COLOR)
+        </button>
+        <button id="btnLores" class="mode-btn" title="Lores 4-Color Multicolor Mode (12x21 double-width pixels)">
+          LORES (4-COLOR)
+        </button>
+      </div>
+
+      <!-- Presets dropdown -->
+      <div class="select-wrapper">
+        <select id="presetSelect" class="app-select" title="Load Preset Sprite">
+          <option value="0">Preset: C64 User's Guide Balloon</option>
+          <option value="1">Preset: Classic Space Invader</option>
+          <option value="2">Preset: Multicolor Starfighter</option>
+          <option value="3">Preset: Retro 8-Bit Hero</option>
+          <option value="4">Preset: Multicolor Ghost</option>
+          <option value="-1">-- Clear Canvas (Blank) --</option>
+        </select>
+      </div>
+
+      <!-- Save and Load Buttons -->
+      <button id="btnLoad" class="btn btn-secondary" title="Load Sprite (.json, .bas, .bin, .spr, .prg)">
+        📂 Load
+      </button>
+      <button id="btnSave" class="btn btn-primary" title="Save Sprite Project or Export">
+        💾 Save
+      </button>
+
+      <input type="file" id="fileInput" accept=".json,.bas,.txt,.bin,.spr,.prg" style="display: none;">
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       Main Workspace: 3 Columns (Tools & Palette | Editor Canvas | Previews & BASIC)
+       ======================================================================== -->
+  <main class="app-workspace">
+
+    <!-- ----------------------------------------------------------------------
+         LEFT COLUMN: Tools, Color Slots, Standard 16 C64 Colors Palette
+         ---------------------------------------------------------------------- -->
+    <aside class="panel tools-palette-panel">
+      <div class="panel-header">
+        <span class="panel-title">🛠 TOOLS & COLORS</span>
+      </div>
+      
+      <div class="panel-body">
+        <!-- Drawing Tools -->
+        <div>
+          <div class="section-label">DRAWING TOOLS</div>
+          <div class="tool-grid">
+            <button class="tool-btn active" data-tool="pencil" title="Pencil (Draw) [Key: P or D]">
+              <span class="icon">✏️</span>
+              <span>Pencil</span>
+            </button>
+            <button class="tool-btn" data-tool="eraser" title="Eraser (Set to Background) [Key: E or Right Click]">
+              <span class="icon">🧹</span>
+              <span>Eraser</span>
+            </button>
+            <button class="tool-btn" data-tool="bucket" title="Paint Bucket (Flood Fill) [Key: B]">
+              <span class="icon">🪣</span>
+              <span>Fill</span>
+            </button>
+            <button class="tool-btn" data-tool="picker" title="Eyedropper (Pick Color) [Key: I]">
+              <span class="icon">💧</span>
+              <span>Pick</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Transformations -->
+        <div>
+          <div class="section-label">TRANSFORM</div>
+          <div class="transform-actions">
+            <button id="btnFlipH" class="btn btn-secondary btn-icon-only" title="Flip Horizontal">
+              ↔ Flip H
+            </button>
+            <button id="btnFlipV" class="btn btn-secondary btn-icon-only" title="Flip Vertical">
+              ↕ Flip V
+            </button>
+            <button id="btnInvert" class="btn btn-secondary btn-icon-only" title="Invert Pixels">
+              ☯ Invert
+            </button>
+            <button id="btnClear" class="btn btn-danger btn-icon-only" title="Clear Sprite">
+              ✖ Clear
+            </button>
+          </div>
+
+          <div class="shift-cluster">
+            <div></div>
+            <button id="btnShiftUp" class="shift-btn" title="Shift Up">▲</button>
+            <div></div>
+            <button id="btnShiftLeft" class="shift-btn" title="Shift Left">◄</button>
+            <button id="btnShiftDown" class="shift-btn" title="Shift Down">▼</button>
+            <button id="btnShiftRight" class="shift-btn" title="Shift Right">►</button>
+          </div>
+        </div>
+
+        <!-- Active Color Slots -->
+        <div class="color-slots-section">
+          <div class="section-label">
+            <span>ACTIVE COLOR SLOTS</span>
+            <small style="text-transform: none; color: var(--text-muted);">(Click slot to select)</small>
+          </div>
+          
+          <div class="slot-list">
+            <!-- Slot 0: Background / Transparent (%00 in lores, %0 in hires) -->
+            <div id="slotBg" class="slot-card" data-slot="0" data-slot-name="bg" title="Background / Transparent ($D021)">
+              <div class="slot-info">
+                <div id="swatchBg" class="slot-swatch"></div>
+                <div class="slot-meta">
+                  <span class="slot-title">0: Background / Screen</span>
+                  <span id="lblBg" class="slot-sub">6: Blue</span>
+                </div>
+              </div>
+              <span id="badgeBg" class="slot-code">%0</span>
+            </div>
+
+            <!-- Slot 1 in Lores: Multicolor 1 ($D025) (%01) -->
+            <div id="slotMC1" class="slot-card" data-slot="1" data-slot-name="mc1" style="display: none;" title="Multicolor 1 ($D025)">
+              <div class="slot-info">
+                <div id="swatchMC1" class="slot-swatch"></div>
+                <div class="slot-meta">
+                  <span class="slot-title">1: Multicolor 1 ($D025)</span>
+                  <span id="lblMC1" class="slot-sub">2: Red</span>
+                </div>
+              </div>
+              <span class="slot-code">%01</span>
+            </div>
+
+            <!-- Sprite Foreground Color (Slot 1 in Hires %1, Slot 2 in Lores %10) -->
+            <div id="slotSprite" class="slot-card active" data-slot="1" data-slot-name="sprite" title="Sprite Individual Color ($D028)">
+              <div class="slot-info">
+                <div id="swatchSprite" class="slot-swatch"></div>
+                <div class="slot-meta">
+                  <span id="titleSprite" class="slot-title">1: Sprite Main Color</span>
+                  <span id="lblSprite" class="slot-sub">1: White</span>
+                </div>
+              </div>
+              <span id="badgeSprite" class="slot-code">%1</span>
+            </div>
+
+            <!-- Slot 3 in Lores: Multicolor 2 ($D026) (%11) -->
+            <div id="slotMC2" class="slot-card" data-slot="3" data-slot-name="mc2" style="display: none;" title="Multicolor 2 ($D026)">
+              <div class="slot-info">
+                <div id="swatchMC2" class="slot-swatch"></div>
+                <div class="slot-meta">
+                  <span class="slot-title">3: Multicolor 2 ($D026)</span>
+                  <span id="lblMC2" class="slot-sub">7: Yellow</span>
+                </div>
+              </div>
+              <span class="slot-code">%11</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Standard 16 C64 Colors Palette Selector -->
+        <div>
+          <div class="section-label">
+            <span>STANDARD 16 C64 PALETTE</span>
+            <small style="text-transform: none; color: var(--c64-cyan);">(Click to assign)</small>
+          </div>
+          <div id="paletteGrid" class="palette-grid">
+            <!-- 16 C64 color swatches generated dynamically by js/app.js -->
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ----------------------------------------------------------------------
+         CENTER COLUMN: Main Interactive Sprite Canvas Grid & Toolbar
+         ---------------------------------------------------------------------- -->
+    <section class="panel editor-panel">
+      <!-- Canvas Toolbar -->
+      <div class="editor-toolbar">
+        <div class="toolbar-group">
+          <button id="btnUndo" class="btn btn-secondary btn-icon-only" title="Undo (Ctrl+Z)" disabled>
+            ↩ Undo
+          </button>
+          <button id="btnRedo" class="btn btn-secondary btn-icon-only" title="Redo (Ctrl+Y)" disabled>
+            ↪ Redo
+          </button>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="c64-checkbox" title="Toggle pixel grid lines">
+            <input type="checkbox" id="chkShowGrid" checked>
+            <span>Grid</span>
+          </label>
+          <label class="c64-checkbox" title="Toggle 8-bit byte boundary lines">
+            <input type="checkbox" id="chkShowGuides" checked>
+            <span>Byte Guides</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Canvas Center Area -->
+      <div class="canvas-container">
+        <canvas id="editorCanvas" width="480" height="420" title="Click and drag to draw. Right-click to erase."></canvas>
+      </div>
+
+      <!-- Canvas Statusbar -->
+      <div class="editor-statusbar">
+        <span id="coordsDisplay" class="coords-display">X: 0, Y: 0 | Row: 0 | Byte: 0</span>
+        <span id="spriteStats">Mode: Hires (2-Color, 24x21) | 63 Bytes</span>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         RIGHT COLUMN: Thumbnail Previews & C64 BASIC .BAS Code Box
+         ---------------------------------------------------------------------- -->
+    <aside class="panel preview-code-panel">
+      <!-- Sprite Preview Section -->
+      <div class="preview-section">
+        <div class="panel-header">
+          <span class="panel-title">👁 SPRITE PREVIEW</span>
+        </div>
+
+        <div class="panel-body" style="padding-bottom: 0;">
+          <!-- Previews Display Frame -->
+          <div class="preview-display-box">
+            <!-- Actual Size Thumbnail (24x21 px) -->
+            <div class="preview-item">
+              <span class="preview-label">ACTUAL SIZE (1X)</span>
+              <div class="actual-size-frame">
+                <canvas id="thumbActual" class="thumbnail-canvas" width="24" height="21" title="Actual Size 24x21 Thumbnail"></canvas>
+              </div>
+            </div>
+
+            <!-- 2x Scale Preview -->
+            <div class="preview-item">
+              <span class="preview-label">SCALE 2X</span>
+              <div class="actual-size-frame">
+                <canvas id="thumb2x" class="thumbnail-canvas" width="48" height="42" title="2x Scale Preview"></canvas>
+              </div>
+            </div>
+
+            <!-- 4x Scale Preview -->
+            <div class="preview-item">
+              <span class="preview-label">SCALE 4X</span>
+              <div class="actual-size-frame">
+                <canvas id="thumb4x" class="thumbnail-canvas" width="96" height="84" title="4x Scale Preview"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview & VIC-II Hardware Options -->
+          <div class="preview-toggles">
+            <label class="c64-checkbox" title="VIC-II $D01D: Sprite Double Width">
+              <input type="checkbox" id="chkExpandX">
+              <span>Expand X ($D01D)</span>
+            </label>
+            <label class="c64-checkbox" title="VIC-II $D017: Sprite Double Height">
+              <input type="checkbox" id="chkExpandY">
+              <span>Expand Y ($D017)</span>
+            </label>
+
+            <div class="select-wrapper" style="margin-left: auto;">
+              <select id="selPreviewBg" class="app-select" style="padding-top: 4px; padding-bottom: 4px;" title="Preview Background">
+                <option value="c64">C64 Screen Color</option>
+                <option value="transparent">Transparent</option>
+                <option value="black">Black Background</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commodore 64 BASIC (.BAS) Display Box Section -->
+      <div class="code-container" style="padding: 0 14px 14px 14px;">
+        <div class="code-box-header">
+          <span class="code-title">📜 COMMODORE BASIC V2 (.BAS)</span>
+          <div class="code-actions">
+            <select id="selSpriteNum" class="app-select" style="padding: 2px 20px 2px 6px; font-size: 11px;" title="Target Sprite (0-7)">
+              <option value="0">Sprite 0</option>
+              <option value="1">Sprite 1</option>
+              <option value="2">Sprite 2</option>
+              <option value="3">Sprite 3</option>
+              <option value="4">Sprite 4</option>
+              <option value="5">Sprite 5</option>
+              <option value="6">Sprite 6</option>
+              <option value="7">Sprite 7</option>
+            </select>
+            <select id="selDataFormat" class="app-select" style="padding: 2px 20px 2px 6px; font-size: 11px;" title="DATA statements layout">
+              <option value="rows">3 Bytes / Row</option>
+              <option value="compact">8 Bytes / Line</option>
+            </select>
+            <button id="btnCopyBasic" class="btn btn-secondary btn-icon-only" style="padding: 3px 8px; font-size: 11px;" title="Copy BASIC Code to Clipboard">
+              📋 Copy
+            </button>
+            <button id="btnDownloadBasic" class="btn btn-primary btn-icon-only" style="padding: 3px 8px; font-size: 11px;" title="Download .BAS file">
+              ⬇ .BAS
+            </button>
+          </div>
+        </div>
+
+        <div class="code-editor-area">
+          <textarea id="basicOutput" readonly spellcheck="false" title="Commodore 64 BASIC V2 Sprite Listing"></textarea>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ========================================================================
+       Save / Export Modal Dialog
+       ======================================================================== -->
+  <div id="saveModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="saveModalTitle" class="modal-title">💾 SAVE & EXPORT SPRITE</h3>
+        <button class="modal-close" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          Choose an export format for your Commodore 64 sprite:
+        </p>
+
+        <button id="btnModalSaveJSON" class="btn btn-primary" style="justify-content: flex-start; padding: 10px 14px;">
+          <span>📦 <strong>Save Project (.json)</strong> — Full project state including colors, mode, expansion</span>
+        </button>
+
+        <button id="btnModalExportBAS" class="btn btn-secondary" style="justify-content: flex-start; padding: 10px 14px;">
+          <span>📜 <strong>Export Commodore BASIC (.bas)</strong> — Ready to RUN on C64 emulator or real machine</span>
+        </button>
+
+        <button id="btnModalExportBIN" class="btn btn-secondary" style="justify-content: flex-start; padding: 10px 14px;">
+          <span>💾 <strong>Export Binary (.bin / .spr)</strong> — Raw 63 bytes VIC-II binary sprite data</span>
+        </button>
+
+        <button id="btnModalExportPNG" class="btn btn-secondary" style="justify-content: flex-start; padding: 10px 14px;">
+          <span>🖼 <strong>Export Image (.png)</strong> — Scaled pixel art PNG image</span>
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary modal-close">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/palette.js"></script>
+  <script src="js/sprite.js"></script>
+  <script src="js/basic-generator.js"></script>
+  <script src="js/presets.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
